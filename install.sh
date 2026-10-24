@@ -1,14 +1,28 @@
 #!/usr/bin/env bash
 # Symlink the config in claude/ into ~/.claude/ so the repo stays the source of truth.
-# Safe to re-run. Usage: ./install.sh [--dry-run]
+# Safe to re-run. Usage: ./install.sh [--dry-run] [--with codegraph,ecc]
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TARGET="${CLAUDE_HOME:-$HOME/.claude}"
 DRY=0
-[[ "${1:-}" == "--dry-run" ]] && DRY=1
-
 ITEMS=(CLAUDE.md skills/agy-worker skills/agy-ui)
+
+while (( $# )); do
+  case "$1" in
+    --dry-run) DRY=1 ;;
+    --with)
+      [[ -n "${2:-}" ]] || { echo "--with needs a list, e.g. --with codegraph,ecc" >&2; exit 2; }
+      IFS=, read -ra extras <<< "$2"
+      for x in "${extras[@]}"; do
+        [[ -f "$REPO/claude/rules/$x.md" ]] || { echo "unknown add-on: $x (see claude/rules/)" >&2; exit 2; }
+        ITEMS+=("rules/$x.md")
+      done
+      shift ;;
+    *) echo "unknown option: $1" >&2; exit 2 ;;
+  esac
+  shift
+done
 STAMP="$(date +%Y%m%d-%H%M%S)"
 status=0
 

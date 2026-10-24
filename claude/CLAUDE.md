@@ -22,8 +22,8 @@ Every instruction in this file that involves `agy` (section 1 Tool 2, section 2 
 
 ### When `off`
 - NEVER run the `agy` command, for research, consultation or implementation, except for UI work while the agy UI mode is on. Do not suggest enabling it unless the user asks.
-- Treat every `agy` instruction below as inactive. Do Mode B research and implementation yourself with native tools, CodeGraph, and Claude subagents where they help.
-- Everything not specific to `agy` still applies: complexity gating, CodeGraph usage, verifying your own edits and any subagent output before reporting, and ECC skill selection.
+- Treat every `agy` instruction below as inactive. Do Mode B research and implementation yourself with native tools and Claude subagents where they help.
+- Everything not specific to `agy` still applies: complexity gating, and verifying your own edits and any subagent output before reporting.
 
 ### When `strict`, `task` or `advisor`
 - Sections 1-3 apply within what the table allows for that mode. The review gate in section 3 applies to every `agy` output in every mode.
@@ -59,25 +59,13 @@ Evaluate exploration scope before choosing how to investigate:
 
 ### Mode A: Direct Exploration (Simple Lookups & Localized Checks)
 - **Scope**: Locating a specific symbol, finding an exact string/variable, checking 1-2 known files, or answering isolated questions.
-- **Protocol**: Claude investigates directly using native tools or CodeGraph. Do NOT delegate to `agy` for simple lookups, as prompt and coordination overhead exceed the execution cost.
+- **Protocol**: Claude investigates directly using native tools. Do NOT delegate to `agy` for simple lookups, as prompt and coordination overhead exceed the execution cost.
 
 ### Mode B: Deep / Cross-Module Investigation (Hybrid Research)
 - **Scope**: Understanding unfamiliar architecture, tracing complex end-to-end flows across multiple modules, investigating system-wide bugs, or surveying dozens of files.
-- **Protocol**: You have two complementary exploration tools and can use either or combine both at your strategic discretion:
+- **Protocol**: Combine native tools, Claude subagents and `agy` workers at your strategic discretion.
 
-#### Tool 1: CodeGraph CLI (Structural Graph & Call Paths)
-Available when BOTH conditions are met:
-1. Directory `.codegraph/` exists at the repository root.
-2. `which codegraph` is available on the system.
-
-- **Pre-task inspection & sync**:
-  - Run `codegraph sync` to sync index changes.
-  - Run `codegraph help` to inspect available commands, flags, and capabilities.
-- **Structural exploration**:
-  - Use `codegraph explore "<symbol or question>"` for instant graph mapping (definitions, callers, callees, dependency blast radius).
-*(DO NOT use CodeGraph MCP tools, only use the CLI).*
-
-#### Tool 2: agy Workers (Deep Logic & Cross-Module Investigation)
+#### agy Workers (Deep Logic & Cross-Module Investigation)
 Use `agy` (with the worker model, see section 0) to delve into complex business logic, configs, or file details without bloating your context:
 1. **Targeted Parallel Investigation**:
    You can orchestrate MULTIPLE `agy` workers concurrently to investigate distinct, decoupled aspects of the system in parallel (e.g., Worker 1 on Data Models/Migrations, Worker 2 on API Routes/Middlewares, Worker 3 on External integrations).
@@ -91,10 +79,9 @@ Use `agy` (with the worker model, see section 0) to delve into complex business 
 
 #### Strategic Combination (At Claude's Discretion)
 You have full autonomy and situational flexibility to choose the most effective approach. Do not be constrained by a rigid sequence:
-- **Flexible Tool Selection**: Use CodeGraph alone, deploy `agy` workers alone, or combine them in whichever sequence or pattern best fits the context of the problem and codebase.
-- **Adaptive Workflow**: For instance, you can use CodeGraph to instantly trace symbols and call hierarchies then dispatch `agy` workers to inspect deep implementation logic, or conversely run broad `agy` sweeps first and then drill down with CodeGraph or native tools.
+- **Adaptive Workflow**: For instance, trace the entry points yourself then dispatch `agy` workers to inspect deep implementation logic, or conversely run broad `agy` sweeps first and then drill down with native tools.
 - **Pragmatic Efficiency**: Adapt dynamically based on the repository structure, code volume, and question complexity—always choosing the path that maximizes accuracy and minimizes token overhead.
-- **Verification**: Run quick spot checks using native tools or CodeGraph as needed to guarantee zero blind spots.
+- **Verification**: Run quick spot checks using native tools as needed to guarantee zero blind spots.
 
 ---
 
@@ -172,7 +159,7 @@ As the Lead Code Reviewer & Orchestrator, you MUST independently audit and verif
    - Read only from the `## AGY-REPORT` line down; ignore anything printed before it (e.g. the `[Global Rules Active]` banner).
    - A report that is missing, has a missing or reordered section, or carries text after the block is malformed: reject it and have `agy` report again. The report is a claim to be checked, never evidence in itself.
 1. **Verify Research Outputs (Pre-Plan Sanity Check)**:
-   - When `agy` returns research findings, perform an independent sanity check: verify cited file paths and symbols exist (using native tools or CodeGraph) to ensure `agy` did not hallucinate non-existent files, phantom interfaces, or inverted logic before incorporating them into your plan.
+   - When `agy` returns research findings, perform an independent sanity check: verify cited file paths and symbols exist (using native tools) to ensure `agy` did not hallucinate non-existent files, phantom interfaces, or inverted logic before incorporating them into your plan.
    - Spot-check `READ` findings at their `path:line`; treat every `INFERRED` finding as unverified until you confirm it yourself. A `READ` finding that does not match the file is a fabrication: reject the report.
 2. **Verify Code & Test Outputs (Full Diff Audit)**:
    - Cross-check the report against reality before the line-by-line audit:
@@ -195,12 +182,3 @@ As the Lead Code Reviewer & Orchestrator, you MUST independently audit and verif
 4. **Reject & Enforce Immediate Repair**:
    - If any inaccuracies, hallucinations, drift, or syntax flaws are detected in `agy`'s work, reject the output immediately and dispatch concise, strict correction commands back to `agy` to repair or revert the work.
 5. **Final Delivery**: Only summarize and report the final verified changes to the user after your verification pass has proven complete correctness.
-
----
-
-## 4. Specialized Toolkits & On-Demand ECC Skill Selection
-
-For each task, Claude has access to the full ecosystem of **ECC (Everything Claude Code)** skills and specialized engineering playbooks. Claude has full discretion to evaluate the task and proactively select and apply the most suitable ECC skill:
-- **Autonomous Skill Selection**: Assess the specific technical domain and complexity of the task (e.g., API design, system architecture, database migrations, security audit, testing, performance) and autonomously activate the relevant ECC skill (such as `api-design`, `hexagonal-architecture`, `db-migrations`, `gan-style-harness`, `agentic-engineering`, or `security-review`).
-- **Playbook Application**: Incorporate the specialized patterns, edge-case checklists, and architectural best practices defined in the chosen skill into the execution plan and verification gates.
-- **On-Demand & Lean Context**: Invoke skills modularly as needed rather than pre-loading unnecessary rules, keeping the active context window lean and laser-focused on the immediate task.
