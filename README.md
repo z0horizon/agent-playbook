@@ -29,10 +29,16 @@ Add-ons are opt-in. Pass the ones whose tools you have installed:
 |--------|-------|
 | `codegraph` | the `codegraph` CLI, plus a `.codegraph/` index in the repo |
 | `ecc` | the ECC (Everything Claude Code) plugin |
+| `design-md` | the `awesome-design-md` collection at `~/.agents/design-md/` (enables `/agy-ui <brand>`) |
+| `ui-ux-pro-max` | the `ui-ux-pro-max` plugin |
+| `frontend-design` | the `frontend-design` skill (optionally `theme-factory`, `web-artifacts-builder`, `canvas-design`) |
+| `webapp-testing` | the `webapp-testing` skill (Playwright) |
 
 ```sh
-./install.sh --with codegraph,ecc
+./install.sh --with codegraph,ecc,design-md,ui-ux-pro-max,frontend-design,webapp-testing
 ```
+
+Without add-ons the core still works: Claude builds the Design Brief from the project and its own judgment.
 
 Existing files in `~/.claude/` are moved to `~/.claude/.agent-playbook-backup/<timestamp>/` before being replaced. A target that is already a symlink to somewhere else is left alone and reported. Set `CLAUDE_HOME` to install somewhere other than `~/.claude`.
 

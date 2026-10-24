@@ -15,7 +15,7 @@ Two independent switches, both scoped to one chat.
 | `task` | research + consultation + goal/scope/acceptance tasks | Medium-to-large work where agy can decide the how. |
 | `advisor` | research + opinions, never edits | You want a second view but Claude should write the code. |
 
-**UI mode** (`/agy-ui`, default `on`, model `gemini-4-argon-high`) sends UI/UX work to agy under the task contract, with a Design Brief Claude builds once per chat. `/agy-ui <brand>` pins a brand reference from `~/.agents/design-md/`.
+**UI mode** (`/agy-ui`, default `on`, model `gemini-4-argon-high`) sends UI/UX work to agy under the task contract, with a Design Brief Claude builds once per chat. With the `design-md` add-on, `/agy-ui <brand>` pins a brand reference from `~/.agents/design-md/`.
 
 ## Invoking the skills
 

@@ -16,7 +16,7 @@ Arguments are case-insensitive and may come in any order, e.g. `/agy-ui off`, `/
 - **State**: `on` or `off`.
 - **Model family**: `argon` (Gemini 4 Argon) or `flash` (Gemini 3.8 Flash).
 - **Effort**: `low`, `medium` or `high`.
-- **Brand**: any other word is a brand name (e.g. `linear`, `stripe`, `vercel`, `apple`). Check `~/.agents/design-md/<brand>/DESIGN.md`. If found, set state to **ON** and pin that brand's `DESIGN.md` as the session's active Brand Reference. If not found, list the closest matches from `ls ~/.agents/design-md/` and ask the user to pick one.
+- **Brand**: any other word is a brand name (e.g. `linear`, `stripe`, `vercel`, `apple`). Brand presets come from the `design-md` add-on (`~/.claude/rules/design-md.md`); if `~/.agents/design-md/` does not exist, tell the user presets need that add-on and ignore the word. Otherwise check `~/.agents/design-md/<brand>/DESIGN.md`. If found, set state to **ON** and pin that brand's `DESIGN.md` as the session's active Brand Reference. If not found, list the closest matches from `ls ~/.agents/design-md/` and ask the user to pick one.
 
 Rules:
 - Whatever the arguments name is used as given, without a question. A model or effort named in plain words anywhere in the user's message (e.g. "dùng Gemini 3.8 Flash", "argon medium", "flash low effort") counts the same as an argument; words that only describe the model or the request are not brand names.
@@ -45,7 +45,7 @@ The UI model ID is `gemini-4-argon-<effort>` for `argon` and `gemini-3.8-flash-<
    - the Design Brief (build once and reuse, scaled to the task, with its precedence order),
    - the hand-off to `agy` under the task contract (`~/.claude/skills/agy-worker/templates/task.md`), with the brief marked authoritative,
    - the §3 review gate for every `agy` UI output.
-3. A brand pinned in Step 1 is the "brand reference" in that precedence order: it ranks below the project's existing design and above `ui-ux-pro-max` and `frontend-design`.
+3. A brand pinned in Step 1 is the "brand reference" in that precedence order: it ranks below the project's existing design and above the other design add-ons and Claude's own choices.
 
 **OFF**
 1. Do not send UI work to `agy` under the UI rule; handle it yourself (or via `/agy-worker` if active).

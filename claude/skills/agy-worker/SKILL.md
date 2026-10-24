@@ -50,7 +50,7 @@ The worker model ID is `gemini-4-argon-<effort>` for `argon` and `gemini-3.8-fla
 
 **off**
 1. Never run the `agy` command, for research, consultation or implementation. The only exception is UI work while the agy UI mode (`/agy-ui`, on by default) is on.
-2. Do Mode B work yourself with native tools, CodeGraph and Claude subagents. Everything in CLAUDE.md that does not concern `agy` still applies.
+2. Do Mode B work yourself with native tools, any installed add-ons in `~/.claude/rules/`, and Claude subagents. Everything in CLAUDE.md that does not concern `agy` still applies.
 
 ## Step 3: Confirm and persist
 
